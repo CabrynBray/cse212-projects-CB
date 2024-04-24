@@ -39,7 +39,20 @@ public static class ArraysTester {
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return new double[0]; // replace this return statement with your own
+        // Create an empty list to store the multiplications 
+        List<double> multiplesList = new List<double>();
+        // Creat for loop that go's throught the 'length' (amount of times the input of the function spesifies.)
+        for (int i = 0; i < length; i++)
+        {
+            // Calculate the next multiple of the given number. For example input = 2,4 output = 2, 4, 6, 8. 
+            double multiply = number * (i + 1);
+
+            // Add the newly calculated multiple's to the empty list (multiplesList)
+            multiplesList.Add(multiply);
+        }
+
+        // Change the list into an array and return the array.
+        return multiplesList.ToArray();
     }
     
     /// <summary>
@@ -56,6 +69,25 @@ public static class ArraysTester {
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+         // Check if the amount is within 1 and data.count
+         if (amount < 1 || amount > data.Count)
+         {
+            throw new ArgumentOutOfRangeException(nameof(amount), "The amount needs to be in the specified range.");
+         }
+         // Calculate the effective cercular motion amount by taking the remainder of dividing the amount by the data.count
+         int effectiveAmount = amount % data.Count;
+         // Create a new list to store the moveded numbers
+         List<int> rotatedList =
+         [
+             // Get all of the amounts that need to be moved and add them to the end of the new list
+             .. data.GetRange(data.Count - effectiveAmount, effectiveAmount),
+             // Get all of the amounts that remain unchanged after the move and add them to the beginning of the new list
+             .. data.GetRange(0, data.Count - effectiveAmount),
+         ];
+         // Clear the original list and add the amounts/ numbers from the moved list
+         data.Clear();
+         data.AddRange(rotatedList);
 
     }
 }
