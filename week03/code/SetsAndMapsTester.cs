@@ -1,7 +1,10 @@
+using System.Linq;
 using System.Text.Json;
 
-public static class SetsAndMapsTester {
-    public static void Run() {
+public static class SetsAndMapsTester
+{
+    public static void Run()
+    {
         // Problem 1: Find Pairs with Sets
         Console.WriteLine("\n=========== Finding Pairs TESTS ===========");
         DisplayPairs(new[] { "am", "at", "ma", "if", "fi" });
@@ -107,10 +110,40 @@ public static class SetsAndMapsTester {
     /// that there were no duplicates) and therefore should not be displayed.
     /// </summary>
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
-    private static void DisplayPairs(string[] words) {
+    private static void DisplayPairs(string[] words)
+    {
         // To display the pair correctly use something like:
         // Console.WriteLine($"{word} & {pair}");
         // Each pair of words should displayed on its own line.
+
+
+        var pairs = new HashSet<string>();
+        var results = new HashSet<string>();
+
+        foreach (string word in words)
+        {
+            char[] stringArray = word.ToCharArray();
+            Array.Reverse(stringArray);
+            string reversedWord = new string(stringArray);
+
+            if (pairs.Contains(reversedWord) && reversedWord != word)
+            {
+                // Construct the pair and add it to the results set
+                string pair = $"{word} & {reversedWord}";
+                results.Add(pair);
+            }
+
+            // Add the word to the set of pairs
+            pairs.Add(word);
+
+        }
+
+        // Display the pairs stored in the results set
+        foreach (string pair in results)
+        {
+            Console.WriteLine(pair);
+        }
+
     }
 
     /// <summary>
@@ -127,15 +160,24 @@ public static class SetsAndMapsTester {
     /// #############
     /// # Problem 2 #
     /// #############
-    private static Dictionary<string, int> SummarizeDegrees(string filename) {
+    private static Dictionary<string, int> SummarizeDegrees(string filename)
+    {
         var degrees = new Dictionary<string, int>();
-        foreach (var line in File.ReadLines(filename)) {
+        foreach (var line in File.ReadLines(filename))
+        {
             var fields = line.Split(",");
             // Todo Problem 2 - ADD YOUR CODE HERE
+            var degreeName = fields[3];
+            if (degrees.ContainsKey(degreeName))
+                degrees[degreeName]++;
+            else
+                degrees[degreeName] = 1;
         }
 
         return degrees;
     }
+
+
 
     /// <summary>
     /// Determine if 'word1' and 'word2' are anagrams.  An anagram
@@ -156,15 +198,47 @@ public static class SetsAndMapsTester {
     /// #############
     /// # Problem 3 #
     /// #############
-    private static bool IsAnagram(string word1, string word2) {
+    private static bool IsAnagram(string word1, string word2)
+    {
         // Todo Problem 3 - ADD YOUR CODE HERE
-        return false;
+
+        word1 = word1.ToLower().Replace(" ", "");
+        word2 = word2.ToLower().Replace(" ", "");
+
+
+        var anagram = new Dictionary<char, int>();
+
+        foreach (var letter in word1)
+        {
+            if (anagram.ContainsKey(letter))
+                anagram[letter]++;
+            else
+                anagram[letter] = 1;
+        }
+
+        foreach (var letter in word2)
+        {
+            if (anagram.ContainsKey(letter))
+                anagram[letter]--;
+            else
+                return false;
+        }
+
+        foreach (var count in anagram.Values)
+        {
+            if (count != 0)
+                return false;
+        }
+
+        return true;
+
     }
 
     /// <summary>
     /// Sets up the maze dictionary for problem 4
     /// </summary>
-    private static Dictionary<ValueTuple<int, int>, bool[]> SetupMazeMap() {
+    private static Dictionary<ValueTuple<int, int>, bool[]> SetupMazeMap()
+    {
         Dictionary<ValueTuple<int, int>, bool[]> map = new() {
             { (1, 1), new[] { false, true, false, true } },
             { (1, 2), new[] { false, true, true, false } },
@@ -220,7 +294,8 @@ public static class SetsAndMapsTester {
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
-    private static void EarthquakeDailySummary() {
+    private static void EarthquakeDailySummary()
+    {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         using var client = new HttpClient();
         using var getRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -235,5 +310,10 @@ public static class SetsAndMapsTester {
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to print out each place a earthquake has happened today and its magitude.
+
+        foreach (var feature in featureCollection.Features)
+        {
+            Console.WriteLine($"{feature.Properties.Place} - Mag {feature.Properties.Mag}");
+        }
     }
 }
