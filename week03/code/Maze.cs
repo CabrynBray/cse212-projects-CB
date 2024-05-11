@@ -34,10 +34,10 @@ public class Maze
     public void MoveLeft()
     {
         // FILL IN CODE
-        if (_mazeMap[(_currX, _currY)] = true)
-        {
+        // if (_mazeMap[(_currX, _currY)] = true)
+        // {
 
-        }
+        // }
     }
 
     /// <summary>
